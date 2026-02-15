@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aşkım Beni Affeder Misin? 💕</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            position: relative;
+        }
+
+        /* Floating Hearts Background */
+        .floating-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            animation: floatHeart 15s linear infinite;
+            opacity: 0.3;
+        }
+
+        @keyframes floatHeart {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Stars Background */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* Main Container */
+        .container {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* Opening Screen */
+        #opening-screen {
+            text-align: center;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .sad-face {
+            font-size: 100px;
+            animation: wobble 2s ease-in-out infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes wobble {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+
+        .opening-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            color: #fff;
+            text-shadow: 0 0 30px rgba(255, 107, 157, 0.5);
+            margin-bottom: 30px;
+            line-height: 1.3;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            font-size: 1.3rem;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(255, 107, 157, 0.4);
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(255, 107, 157, 0.5);
+        }
+
+        /* Slideshow Screen */
+        #slideshow-screen {
+            display: none;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .slideshow-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 3/4;
+            max-height: 70vh;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+            margin-bottom: 30px;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .slide-message {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 40px 20px 30px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            color: white;
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.3rem, 4vw, 1.8rem);
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+            animation: messageAppear 0.5s ease-out;
+        }
+
+        @keyframes messageAppear {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 2px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b9d, #ff8a5c);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        .slide-counter {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        /* Final Screen */
+        #final-screen {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .final-question {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.8rem, 5vw, 2.8rem);
+            color: #fff;
+            margin-bottom: 40px;
+            text-shadow: 0 0 30px rgba(255, 107, 157, 0.5);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .button-container {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            min-height: 150px;
+            position: relative;
+        }
+
+        .yes-btn {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff8a5c 100%);
+            color: white;
+            border: none;
+            padding: 20px 50px;
+            font-size: 1.5rem;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(255, 107, 157, 0.4);
+        }
+
+        .yes-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(255, 107, 157, 0.6);
+        }
+
+        .no-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            font-size: 1.1rem;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: absolute;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .no-btn.surrendered {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff8a5c 100%);
+            animation: surrenderPulse 0.5s ease;
+        }
+
+        @keyframes surrenderPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        /* Success Screen */
+        #success-screen {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .success-heart {
+            font-size: 120px;
+            animation: heartBeat 1s ease-in-out infinite;
+        }
+
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            40% { transform: scale(1); }
+            60% { transform: scale(1.1); }
+        }
+
+        .success-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 6vw, 3.5rem);
+            color: #fff;
+            margin: 20px 0;
+            text-shadow: 0 0 30px rgba(255, 107, 157, 0.5);
+        }
+
+        .success-message {
+            font-size: 1.3rem;
+            color: rgba(255,255,255,0.9);
+            max-width: 500px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        /* Confetti */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+            overflow: hidden;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            animation: confettiFall 4s linear forwards;
+        }
+
+        @keyframes confettiFall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .button-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .no-btn {
+                position: relative;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Stars Background -->
+    <div class="stars" id="stars"></div>
+    
+    <!-- Floating Hearts -->
+    <div class="floating-hearts" id="floating-hearts"></div>
+
+    <div class="container">
+        <!-- Opening Screen -->
+        <div id="opening-screen">
+            <div class="sad-face">🥺</div>
+            <h1 class="opening-title">Canım Beni Affeder Misin?</h1>
+            <button class="start-btn" onclick="startSlideshow()">
+                Sana Bir Şey Göstermek İstiyorum 💕
+            </button>
+        </div>
+
+        <!-- Slideshow Screen -->
+        <div id="slideshow-screen">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="slide-counter" id="slide-counter">1 / 9</div>
+            <div class="slideshow-container" id="slideshow">
+                <!-- Slides will be generated by JS -->
+            </div>
+        </div>
+
+        <!-- Final Screen -->
+        <div id="final-screen">
+            <h2 class="final-question">Aşkım, beni affediyor musun? 🥺💕</h2>
+            <div class="button-container" id="button-container">
+                <button class="yes-btn" onclick="showSuccess()">Evet, Affettim 💕</button>
+                <button class="no-btn" id="no-btn">Hayır 😤</button>
+            </div>
+        </div>
+
+        <!-- Success Screen -->
+        <div id="success-screen">
+            <div class="success-heart">💕</div>
+            <h1 class="success-title">Teşekkür Ederim Aşkım!</h1>
+            <p class="success-message">
+                Seni çok seviyorum, iyi ki varsın hayatımda. 
+                Sen benim her şeyimsin sevgilim. 
+                Sonsuza kadar seninle... 💕
+            </p>
+        </div>
+    </div>
+
+    <!-- Confetti Container -->
+    <div class="confetti-container" id="confetti-container"></div>
+
+    <script>
+        // Photo data with messages
+        const slides = [
+            { img: 'images/IMG_1765.jpeg', message: 'Seninle her an çok güzel aşkım... 💫' },
+            { img: 'images/IMG_4085.jpeg', message: 'Gülüşün hayatıma renk katıyor sevgilim ✨' },
+            { img: 'images/IMG_4015.jpeg', message: 'Yanındayken kendimi evimde hissediyorum 🏠💕' },
+            { img: 'images/IMG_0885.jpeg', message: 'Her anımız bir hazine benim için 💎' },
+            { img: 'images/IMG_3902.jpeg', message: 'Seni çok seviyorum aşkım 💕' },
+            { img: 'images/IMG_3438.jpeg', message: 'İyi ki varsın hayatımda sevgilim 🌟' },
+            { img: 'images/IMG_5279.jpeg', message: 'Seninle olmak dünyanın en güzel şeyi 💫' },
+            { img: 'images/IMG_5024.jpeg', message: 'Kalbim sadece senin için atıyor 💓' },
+            { img: 'images/IMG_4426.jpeg', message: 'Sonsuza kadar seninle olmak istiyorum... 💕' }
+        ];
+
+        let currentSlide = 0;
+        let noClickCount = 0;
+        let yesButtonScale = 1;
+
+        // Create stars
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 2 + 's';
+                star.style.animationDuration = (Math.random() * 2 + 1) + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Create floating hearts
+        function createFloatingHearts() {
+            const container = document.getElementById('floating-hearts');
+            const hearts = ['💕', '💖', '💗', '💓', '💞', '❤️', '🩷'];
+            
+            for (let i = 0; i < 15; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDelay = Math.random() * 15 + 's';
+                heart.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                container.appendChild(heart);
+            }
+        }
+
+        // Generate slideshow
+        function generateSlideshow() {
+            const slideshow = document.getElementById('slideshow');
+            slides.forEach((slide, index) => {
+                const div = document.createElement('div');
+                div.className = 'slide' + (index === 0 ? ' active' : '');
+                div.innerHTML = `
+                    <img src="${slide.img}" alt="Anı ${index + 1}">
+                    <div class="slide-message">${slide.message}</div>
+                `;
+                slideshow.appendChild(div);
+            });
+        }
+
+        // Start slideshow
+        function startSlideshow() {
+            document.getElementById('opening-screen').style.display = 'none';
+            document.getElementById('slideshow-screen').style.display = 'block';
+            
+            generateSlideshow();
+            autoAdvanceSlides();
+        }
+
+        // Auto advance slides
+        function autoAdvanceSlides() {
+            const interval = setInterval(() => {
+                currentSlide++;
+                
+                if (currentSlide >= slides.length) {
+                    clearInterval(interval);
+                    setTimeout(showFinalScreen, 1000);
+                    return;
+                }
+                
+                updateSlide();
+            }, 3500);
+        }
+
+        // Update slide
+        function updateSlide() {
+            const allSlides = document.querySelectorAll('.slide');
+            allSlides.forEach((slide, index) => {
+                slide.classList.toggle('active', index === currentSlide);
+            });
+            
+            // Update progress
+            const progress = ((currentSlide + 1) / slides.length) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+            document.getElementById('slide-counter').textContent = `${currentSlide + 1} / ${slides.length}`;
+        }
+
+        // Show final screen
+        function showFinalScreen() {
+            document.getElementById('slideshow-screen').style.display = 'none';
+            document.getElementById('final-screen').style.display = 'block';
+            
+            setupNoButton();
+        }
+
+        // Setup No button behavior
+        function setupNoButton() {
+            const noBtn = document.getElementById('no-btn');
+            const container = document.getElementById('button-container');
+            const yesBtn = document.querySelector('.yes-btn');
+            
+            // Run away on hover (desktop)
+            noBtn.addEventListener('mouseover', moveNoButton);
+            
+            // Run away on click (mobile)
+            noBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                noClickCount++;
+                
+                // Grow yes button
+                yesButtonScale += 0.15;
+                yesBtn.style.transform = `scale(${yesButtonScale})`;
+                
+                // Shrink no button
+                const shrinkFactor = Math.max(0.5, 1 - noClickCount * 0.08);
+                noBtn.style.transform = `scale(${shrinkFactor})`;
+                
+                // After many attempts, surrender
+                if (noClickCount >= 8) {
+                    noBtn.textContent = 'Tamam, Affettim! 💕';
+                    noBtn.classList.add('surrendered');
+                    noBtn.onclick = showSuccess;
+                    return;
+                }
+                
+                moveNoButton();
+            });
+        }
+
+        // Move No button to random position
+        function moveNoButton() {
+            const noBtn = document.getElementById('no-btn');
+            const container = document.getElementById('button-container');
+            
+            const containerRect = container.getBoundingClientRect();
+            const btnRect = noBtn.getBoundingClientRect();
+            
+            // Calculate new position within viewport
+            const maxX = window.innerWidth - btnRect.width - 40;
+            const maxY = window.innerHeight - btnRect.height - 40;
+            
+            const newX = Math.random() * maxX;
+            const newY = Math.random() * maxY;
+            
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = newX + 'px';
+            noBtn.style.top = newY + 'px';
+        }
+
+        // Show success screen
+        function showSuccess() {
+            document.getElementById('opening-screen').style.display = 'none';
+            document.getElementById('slideshow-screen').style.display = 'none';
+            document.getElementById('final-screen').style.display = 'none';
+            document.getElementById('success-screen').style.display = 'block';
+            
+            createConfetti();
+            createMassiveHearts();
+        }
+
+        // Create confetti
+        function createConfetti() {
+            const container = document.getElementById('confetti-container');
+            const colors = ['#ff6b9d', '#ff8a5c', '#ffd93d', '#6bcb77', '#4d96ff', '#ff6b6b', '#c44569'];
+            const shapes = ['square', 'circle'];
+            
+            for (let i = 0; i < 150; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.borderRadius = shapes[Math.floor(Math.random() * shapes.length)] === 'circle' ? '50%' : '0';
+                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                    container.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 4000);
+                }, i * 30);
+            }
+        }
+
+        // Create massive hearts on success
+        function createMassiveHearts() {
+            const container = document.getElementById('floating-hearts');
+            const hearts = ['💕', '💖', '💗', '💓', '💞', '❤️', '🩷', '💘', '💝'];
+            
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart';
+                    heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                    heart.style.left = Math.random() * 100 + '%';
+                    heart.style.fontSize = (Math.random() * 30 + 20) + 'px';
+                    heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                    heart.style.opacity = '0.6';
+                    container.appendChild(heart);
+                }, i * 100);
+            }
+        }
+
+        // Initialize
+        createStars();
+        createFloatingHearts();
+    </script>
+</body>
+</html>
